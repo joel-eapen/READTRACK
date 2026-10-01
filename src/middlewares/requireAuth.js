@@ -1,6 +1,7 @@
 import { getAuth } from "@clerk/express";
 
 import ApiError from "../utils/ApiError.js";
+import userModel from "../models/user.model.js";
 
 /**
  * Auth guard for API routes.
@@ -9,12 +10,26 @@ import ApiError from "../utils/ApiError.js";
  * global error handler so the client receives a consistent JSON response
  * (rather than Clerk's default sign-in redirect, which suits SSR apps).
  */
-const requireAuth = (req, res, next) => {
+const requireAuth = async (req, res, next) => {
   const { userId } = getAuth(req);
 
   if (!userId) {
     return next(new ApiError(401, "Unauthorized: authentication required"));
   }
+
+  let user = await userModel.findOne({
+    clerkUserId:userId
+  })
+
+  if(!user || user === null){
+    user = 
+      await userModel.create({
+        clerkUserId:userId
+      })
+  }
+
+  console.log(user)
+
 
   next();
 };

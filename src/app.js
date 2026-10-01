@@ -3,9 +3,11 @@ import morgan from "morgan";
 import cors from "cors";
 import { clerkMiddleware } from "@clerk/express";
 
+import searchRouter from "./routes/search.route.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import ApiError from "./utils/ApiError.js";
 import ApiResponse from "./utils/ApiResponse.js";
+
 
 const app = express();
 
@@ -42,7 +44,9 @@ app.get("/health", (req, res) => {
   new ApiResponse(200, { uptime: process.uptime() }, "OK").send(res);
 });
 
+//search Routes
 
+app.use("/api",searchRouter)
 
 // 404 handler - forward to the global error handler
 app.use((req, res, next) => {
