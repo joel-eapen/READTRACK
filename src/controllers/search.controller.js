@@ -8,14 +8,13 @@ const search = asyncHandler(
         const{q,page,limit}=req.query
         const pageNumber = parseInt(page)
         const limitNumber = parseInt(limit)
-        const encodedQuery = encodeURIComponent(q)
 
         if(pageNumber<= 0 || limitNumber<=0){
             throw new ApiError(400,"Incorrect query")
         }
         let response
         try {
-            response = await googleSearchAPI(encodedQuery,pageNumber,limitNumber,process.env.GOOGLE_BOOKS_API_KEY)
+            response = await googleSearchAPI(q,pageNumber,limitNumber,process.env.GOOGLE_BOOKS_API_KEY)
         } catch (error) {
             throw new ApiError(502,"Bad Gateway")
         }
@@ -36,7 +35,7 @@ const search = asyncHandler(
                 title:item.volumeInfo.title,
                 author:item.volumeInfo.authors?.[0],
                 coverImg:item.volumeInfo.imageLinks?.thumbnail,
-                isbn:item.volumeInfo.industryIdentifiers[0]?.identifier,
+                isbn:item.volumeInfo.industryIdentifiers?.[0]?.identifier,
                 totalPages:item.volumeInfo.pageCount
             }
         })

@@ -4,6 +4,6 @@ import requireAuth from "../middlewares/requireAuth.js";
 
 const searchRouter = Router()
 
-searchRouter.get('/search',searchController.search)
+searchRouter.get('/search',requireAuth,searchController.search)
 
 export default searchRouter
