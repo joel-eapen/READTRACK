@@ -28,8 +28,6 @@ const requireAuth = async (req, res, next) => {
       })
   }
 
-  console.log(user)
-
 
   next();
 };
