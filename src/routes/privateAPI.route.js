@@ -18,4 +18,16 @@ privateRouter.get(
   privateAPIController.findAllBook
 )
 
+privateRouter.get(
+  "/books:id",
+  requireAuth,
+  privateAPIController.findOneBook
+)
+
+privateRouter.patch(
+  "/books:id",
+  requireAuth,
+  privateAPIController.updateBook
+)
+
 export default privateRouter;
