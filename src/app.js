@@ -9,7 +9,6 @@ import errorHandler from "./middlewares/errorHandler.js";
 import ApiError from "./utils/ApiError.js";
 import ApiResponse from "./utils/ApiResponse.js";
 
-
 const app = express();
 
 // CORS configuration.
@@ -47,10 +46,10 @@ app.get("/health", (req, res) => {
 
 //search Routes
 
-app.use("/api",searchRouter)
+app.use("/api", searchRouter);
 
 //private APIs
-app.use("/api",privateRouter)
+app.use("/api", privateRouter);
 
 // 404 handler - forward to the global error handler
 app.use((req, res, next) => {

@@ -18,17 +18,16 @@ const requireAuth = async (req, res, next) => {
   }
 
   let user = await userModel.findOne({
-    clerkUserId:userId
-  })
+    clerkUserId: userId,
+  });
 
-  if(!user || user === null){
-    user = 
-      await userModel.create({
-        clerkUserId:userId
-      })
+  if (!user || user === null) {
+    user = await userModel.create({
+      clerkUserId: userId,
+    });
   }
 
-  req.user = user
+  req.user = user;
 
   next();
 };
