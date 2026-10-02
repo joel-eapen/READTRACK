@@ -4,6 +4,7 @@ import cors from "cors";
 import { clerkMiddleware } from "@clerk/express";
 
 import searchRouter from "./routes/search.route.js";
+import privateRouter from "./routes/privateAPI.route.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import ApiError from "./utils/ApiError.js";
 import ApiResponse from "./utils/ApiResponse.js";
@@ -47,6 +48,9 @@ app.get("/health", (req, res) => {
 //search Routes
 
 app.use("/api",searchRouter)
+
+//private APIs
+app.use("/api",privateRouter)
 
 // 404 handler - forward to the global error handler
 app.use((req, res, next) => {

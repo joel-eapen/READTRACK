@@ -36,7 +36,7 @@ export const bookSchema = z.object({
 ,
     totalPages: z
     .int("The total pages should be a number")
-    .positive("The total pages should be a positive number"),
+    .min(0),
 
     pagesRead: z
     .int("The pages read should be a number")
@@ -50,7 +50,8 @@ export const bookSchema = z.object({
     .default(0),
 
     startedAt:z
-    .date(),
+    .date()
+    .optional(),
 
     finishedAt: z
     .date()

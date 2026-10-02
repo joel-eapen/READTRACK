@@ -35,7 +35,7 @@ const bookSchema = new mongoose.Schema(
     },
     totalPages: {
       type: Number,
-      required: [true, "Total number of pages is required"],
+      default:0
     },
     pagesRead: {
       type: Number,
