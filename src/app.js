@@ -5,6 +5,8 @@ import { clerkMiddleware } from "@clerk/express";
 
 import searchRouter from "./routes/search.route.js";
 import privateRouter from "./routes/privateAPI.route.js";
+import developerRouter from "./routes/developerAPI.route.js";
+import publicAPIRouter from "./routes/publicAPIKey.routes.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import ApiError from "./utils/ApiError.js";
 import ApiResponse from "./utils/ApiResponse.js";
@@ -14,18 +16,26 @@ const app = express();
 // CORS configuration.
 // Set CORS_ORIGIN in .env to a comma-separated list of allowed origins.
 // Defaults to "*" (allow all) when unset — tighten this in production.
+
 const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
   : "*";
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// Private routes
+const privateCors = cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+});
+
+// Public developer API
+const publicCors = cors({
+  origin: "*",
+  credentials: false,
+  methods: ["GET", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "x-api-key"],
+});
 
 // Core middleware
 app.use(express.json());
@@ -46,10 +56,18 @@ app.get("/health", (req, res) => {
 
 //search Routes
 
-app.use("/api", searchRouter);
+app.use("/api",privateCors,searchRouter);
 
 //private APIs
-app.use("/api", privateRouter);
+app.use("/api",privateCors,privateRouter);
+
+//developer APIs
+
+app.use("/api",privateCors,developerRouter)
+
+//public APIs
+
+app.use("/api/public",publicCors,publicAPIRouter)
 
 // 404 handler - forward to the global error handler
 app.use((req, res, next) => {

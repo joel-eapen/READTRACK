@@ -19,15 +19,20 @@ privateRouter.get(
 )
 
 privateRouter.get(
-  "/books:id",
+  "/books/:id",
   requireAuth,
   privateAPIController.findOneBook
 )
 
 privateRouter.patch(
-  "/books:id",
+  "/books/:id",
   requireAuth,
   privateAPIController.updateBook
 )
 
+privateRouter.delete(
+  "/books/:id",
+  requireAuth,
+  privateAPIController.deleteBook
+)
 export default privateRouter;

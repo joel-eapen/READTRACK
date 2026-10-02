@@ -213,10 +213,38 @@ const updateBook=asyncHandler(async(req,res)=>{
   await book.save()
 
   return res.status(200).json(new ApiResponse(200,book,"Book updated succesfully"))
-})
+});
+
+const deleteBook = asyncHandler(async(req,res)=>{
+  const {id} = req.params
+  const isValid = mongoose.isValidObjectId(id)
+  if(!isValid){
+    throw new ApiError(400,"The mongo object Id is invalid")
+  }
+
+  const user = await userModel.findOne({
+    clerkUserId:req.user.clerkUserId
+  })
+
+  if(!user){
+    throw new ApiError(404,"User not found")
+  }
+
+  const book = await bookModel.findOneAndDelete({
+    userId:user._id,
+    _id:id
+  })
+
+  if(!book){
+    throw new ApiError(404,"Book not found")
+  }
+
+  return res.status(200).json(new ApiResponse(200,book,"Book deleted successfully"))
+});
 export default {
   addToLibrary,
   findAllBook,
   findOneBook,
-  updateBook
+  updateBook,
+  deleteBook
 };
