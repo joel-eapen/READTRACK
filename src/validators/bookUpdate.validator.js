@@ -16,6 +16,11 @@ const updateSchema = z.object({
 
     status: z
     .enum(["finished", "current_read", "want_to_read"])
+    .optional(),
+
+    TotalPages: z
+    .int()
+    .min(0)
     .optional()
 })
 

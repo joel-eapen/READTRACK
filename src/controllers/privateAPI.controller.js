@@ -130,7 +130,7 @@ const findOneBook = asyncHandler(
 
 const updateBook=asyncHandler(async(req,res)=>{
   const{id}=req.params
-  let {pagesRead,percentRead,status} = req.body
+  let {pagesRead,percentRead,status,TotalPages} = req.body
 
   if(!req.params){
     throw new ApiError(400,"Provide params")
@@ -157,31 +157,34 @@ const updateBook=asyncHandler(async(req,res)=>{
     throw new ApiError(404,"Book not found")
   }
 
-  const totalPages = book.totalPages
-  if(totalPages===undefined || totalPages===0){
-    throw new ApiError(400,"The total pages is not available,choose another book")
-  }
+  
 
   const hasPagesRead = pagesRead !==undefined
   const hasPercentRead = percentRead !==undefined
   const hasStatus = status!==undefined
+  const hasTotalPages = TotalPages!==undefined
+
+  if(hasTotalPages){
+    book.totalPages=TotalPages
+    book.pagesRead = 0
+  }
 
   if(hasPagesRead && hasPercentRead){
     throw new ApiError(400,"Provide only one value")
   }
 
   if(hasPagesRead && !hasPercentRead){
-    if(pagesRead>totalPages){
+    if(pagesRead>book.totalPages || 0){
       throw new ApiError(400,"The pages read cannot be greater than the total pages")
     }
-    percentRead = Math.round((pagesRead/totalPages)*100)
+    percentRead = Math.round((pagesRead/book.totalPages)*100)
     book.percentRead=percentRead
     book.pagesRead=pagesRead
   }
 
   if(hasPercentRead && !hasPagesRead){
-    pagesRead = Math.round((percentRead/100)*totalPages)
-    percentRead = Math.round((pagesRead/totalPages)*100)
+    pagesRead = Math.round((percentRead/100)*book.totalPages)
+    percentRead = Math.round((pagesRead/book.totalPages)*100)
     book.pagesRead=pagesRead
     book.percentRead=percentRead
   }
@@ -190,7 +193,7 @@ const updateBook=asyncHandler(async(req,res)=>{
    if(status==="finished"){
     book.status=status
     book.finishedAt=new Date()
-    book.pagesRead=totalPages
+    book.pagesRead=book.totalPages
     book.percentRead=100
    }
 
